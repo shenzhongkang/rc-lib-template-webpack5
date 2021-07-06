@@ -1,7 +1,9 @@
 import React, { FC } from 'react';
 
 export interface CompProps {
+  /** Title */
   title?: string;
+  /** Text */
   text?: string;
 }
 
