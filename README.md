@@ -69,6 +69,8 @@ import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from 'rollup-plugin-typescript2';
 import postcss from 'rollup-plugin-postcss';
+import { terser } from 'rollup-plugin-terser';
+import { babel } from '@rollup/plugin-babel';
 
 const packageJson = require('./package.json');
 
@@ -91,9 +93,27 @@ export default {
     resolve(),
     commonjs(),
     typescript({ useTsconfigDeclarationDir: true }),
-    postcss({
-      extensions: ['.css'],
+    babel({
+      babelHelpers: 'bundled',
+      babelrc: false,
+      plugins: [
+        [
+          'import',
+          { libraryName: 'antd', libraryDirectory: 'es', style: true },
+        ],
+      ],
+      extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      exclude: 'node_modules/**',
     }),
+    postcss({
+      minimize: true,
+      modules: true,
+      use: {
+        less: { javascriptEnabled: true },
+      },
+      extensions: ['.css', '.less'],
+    }),
+    terser({ format: { comments: false } }),
   ],
 };
 ```
